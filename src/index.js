@@ -21,11 +21,23 @@ const Record = () => {
   }, [])
   return (
     <>
-      <h1>Hello World</h1>
-      {record.map((profile, index) => {
-        const {FirstName} = profile;
-        return <p>{FirstName}</p>
-      })}
+      <h1 className='header'>Records</h1>
+      <ul>
+        {record.map((profile, index) => {
+          const { FirstName, LastName , Gender, Latitude, Longitude, CreditCardNumber, CreditCardType, Email, DomainName, PhoneNumber, MacAddress, URL, UserName, LastLogin, PaymentMethod} = profile
+          return (
+            <li key={index} className='card'>
+              <h2>
+                {FirstName} {LastName}
+              </h2>
+             <a href={Email}><p className='email'>
+                {Email}
+              </p></a>
+              <p>{PhoneNumber}</p>
+            </li>
+          )
+        })}
+      </ul>
     </>
   )
 };
