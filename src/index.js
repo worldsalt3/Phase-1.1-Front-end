@@ -24,6 +24,7 @@ const Record = () => {
       <header className='header'>
         <h1>Records</h1>
         <Search />
+        <Modal />
       </header>
 
       <ul>
@@ -58,6 +59,7 @@ const Record = () => {
           )
         })}
       </ul>
+      <Pagination />
     </>
   )
 };
@@ -68,7 +70,41 @@ const Search = () => {
       <input type="text" className="search" onkeyup="myFunction()" placeholder="Search for names.." />
     </>
   );
-}
+};
+
+const Pagination = () => {
+  return (
+    <div className='pagination pagin'>
+      <a href='#'>&laquo;</a>
+      <a href='#'>1</a>
+      <a class='active' href='#'>
+        2
+      </a>
+      <a href='#'>3</a>
+      <a href='#'>4</a>
+      <a href='#'>5</a>
+      <a href='#'>6</a>
+      <a href='#'>&raquo;</a>
+    </div>
+  )
+};
+
+const Modal = () => {
+  return(
+    <div className="dropdown">
+      <button onclick="myFunction()" className="dropbtn">Filter</button>
+      <div id="myDropdown" class="dropdown-content">
+        <a href="#about">About</a>
+        <a href="#base">Base</a>
+        <a href="#blog">Blog</a>
+        <a href="#contact">Contact</a>
+        <a href="#custom">Custom</a>
+        <a href="#support">Support</a>
+        <a href="#tools">Tools</a>
+      </div>
+    </div>
+  );
+};
 
 ReactDOM.render(
     <Record />
