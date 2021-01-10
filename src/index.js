@@ -6,25 +6,42 @@ import reportWebVitals from './reportWebVitals';
 const url = 'http://api.enye.tech/v1/challenge/records';
 
 const Record = () => {
+
+  // When the user clicks on the button, open the modal
+  const display = (e) => {
+    // e.style.display = 'block'
+  }
+
+  // When the user clicks on <span> (x), close the modal
+  const x = (e) => {
+    // e.style.display = 'none'
+  }
+
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function (event) {
+    if (event.target) {
+      // event.style.display = 'none'
+    }
+  }
+
   const [record, setRecord] = useState([]);
   
- 
-
   const getProfiles = async () => {
     const response = await fetch(url);
     const record = await response.json();
-    setRecord(record.records.profiles)
+    setRecord(record.records.profiles);
   }
 
   useEffect(async () => {
     getProfiles();
-  }, [])
+  }, []);
+
   return (
     <>
       <header className='header'>
         <h1>Records</h1>
         <Search />
-        <Modal />
+        <Filter />
       </header>
 
       <ul>
@@ -45,18 +62,36 @@ const Record = () => {
             UserName,
             LastLogin,
             PaymentMethod,
-          } = profile
-          return (
-            <li key={index} className='card'>
-              <h2>
-                {FirstName} {LastName}
-              </h2>
-              <a href={Email}>
-                <p className='email'>{Email}</p>
-              </a>
-              <p>{PhoneNumber}</p>
-            </li>
-          )
+          } = profile;
+
+          if(index < 20) {
+            return (
+              <li key={index} className='card' onClick={display()}>
+                <h2>
+                  {FirstName} {LastName}
+                </h2>
+                <a href={Email}>
+                  <p className='email'>{Email}</p>
+                </a>
+                <p>{PhoneNumber}</p>
+                <div className='modal'>
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <span className="close" onClick={x()}>&times;</span>
+                      <h2>Modal Header</h2>
+                    </div>
+                    <div className="modal-body">
+                      <p>Some text in the Modal Body</p>
+                      <p>Some other text...</p>
+                    </div>
+                    <div className="modal-footer">
+                      <h3>Modal Footer</h3>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            )
+          }
         })}
       </ul>
       <Pagination />
@@ -67,7 +102,7 @@ const Record = () => {
 const Search = () => {
   return(
     <>
-      <input type="text" className="search" onkeyup="myFunction()" placeholder="Search for names.." />
+      <input type="text" className="search"  placeholder="Search for names.." />
     </>
   );
 };
@@ -77,7 +112,7 @@ const Pagination = () => {
     <div className='pagination pagin'>
       <a href='#'>&laquo;</a>
       <a href='#'>1</a>
-      <a class='active' href='#'>
+      <a className='active' href='#'>
         2
       </a>
       <a href='#'>3</a>
@@ -89,11 +124,11 @@ const Pagination = () => {
   )
 };
 
-const Modal = () => {
+const Filter = () => {
   return(
     <div className="dropdown">
-      <button onclick="myFunction()" className="dropbtn">Filter</button>
-      <div id="myDropdown" class="dropdown-content">
+      <button className="dropbtn">Filter</button>
+      <div id="myDropdown" className="dropdown-content">
         <a href="#about">About</a>
         <a href="#base">Base</a>
         <a href="#blog">Blog</a>
