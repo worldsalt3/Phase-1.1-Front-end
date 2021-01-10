@@ -7,22 +7,27 @@ const url = 'http://api.enye.tech/v1/challenge/records';
 
 const Record = () => {
 
+  const [style, setStyle] = useState(false);
+  
   // When the user clicks on the button, open the modal
-  const display = (e) => {
-    // e.style.display = 'block'
+  const modal = (e) => {
+    e.preventDefault()
+    setStyle(true);
   }
 
   // When the user clicks on <span> (x), close the modal
-  const x = (e) => {
-    // e.style.display = 'none'
+  const x = () => {
+   console.log('clicked')
+   return !style;
+    
   }
 
   // When the user clicks anywhere outside of the modal, close it
-  window.onclick = function (event) {
-    if (event.target) {
-      // event.style.display = 'none'
-    }
-  }
+  // window.onclick = function (event) {
+  //   if (event.target) {
+  //     // event.style.display = 'none'
+  //   }
+  // }
 
   const [record, setRecord] = useState([]);
   
@@ -66,7 +71,7 @@ const Record = () => {
 
           if(index < 20) {
             return (
-              <li key={index} className='card' onClick={display()}>
+              <li key={index} className='card' onClick={(e) => modal(e)}>
                 <h2>
                   {FirstName} {LastName}
                 </h2>
@@ -74,18 +79,36 @@ const Record = () => {
                   <p className='email'>{Email}</p>
                 </a>
                 <p>{PhoneNumber}</p>
-                <div className='modal'>
-                  <div className="modal-content">
-                    <div className="modal-header">
-                      <span className="close" onClick={x()}>&times;</span>
-                      <h2>Modal Header</h2>
+                <div
+                  className={!style ? 'close-modal modal' : 'open-modal modal'}
+                >
+                  <div className='modal-content'>
+                    <div className='modal-header'>
+                      <span className='close' onClick={() => x()}>
+                        &times;
+                      </span>
+                      <h2>Personal Information</h2>
                     </div>
-                    <div className="modal-body">
-                      <p>Some text in the Modal Body</p>
-                      <p>Some other text...</p>
+                    <div className='modal-body'>
+                      <div className='content'>
+                        <p>Name</p> 
+                        <p>{FirstName} {LastName}</p>
+                      </div>
+                      <div className='content'>
+                        <p>Gender</p>
+                        <p>{Gender}</p>
+                      </div>
+                      <div className='content'>
+                        <p>Email</p>
+                        <p> {Email}</p>
+                      </div>
+                      <div className='content'>
+                        <p>Phone Number</p>
+                        <p>{PhoneNumber}</p>
+                      </div>                
                     </div>
-                    <div className="modal-footer">
-                      <h3>Modal Footer</h3>
+                    <div className='modal-footer'>
+                      <h3>CARD</h3>
                     </div>
                   </div>
                 </div>
