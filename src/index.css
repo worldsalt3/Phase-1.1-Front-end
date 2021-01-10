@@ -16,8 +16,6 @@ code {
   margin-left: 60px;
 }
 
-
-
 .card {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   max-width: 300px;
@@ -25,39 +23,29 @@ code {
   text-align: center;
   list-style-type: none;
   padding: 10px;
-  margin: 20px;
+  margin: 15px;
   display: inline-block;
   width: 20%;
 }
 
-.email {
-  font-size: 16px;
-}
-
-.title {
-  color: grey;
-  font-size: 18px;
-}
-
-button {
-  border: none;
-  outline: 0;
-  display: inline-block;
-  padding: 8px;
-  color: white;
-  background-color: #000;
-  text-align: center;
-  cursor: pointer;
-  width: 100%;
-  font-size: 18px;
-}
-
 a {
-  text-decoration: none;
-  font-size: 22px;
   color: black;
 }
 
-button:hover, a:hover {
-  opacity: 0.7;
+ a:hover {
+  opacity: 0.1;
+  text-decoration: none;
+}
+
+.search {
+  background-image: url('./images/icons8-search-64.png'); 
+  background-position: 7px; 
+  background-repeat: no-repeat;
+  background-size: 30px;  
+  width: 50%; 
+  font-size: 16px; 
+  padding: 15px 20px 12px 50px; 
+  border: 1px solid #ddd; 
+  margin-bottom: 12px; 
+  border-radius: 5px;
 }

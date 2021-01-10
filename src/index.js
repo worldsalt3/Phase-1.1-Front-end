@@ -21,18 +21,38 @@ const Record = () => {
   }, [])
   return (
     <>
-      <h1 className='header'>Records</h1>
+      <header className='header'>
+        <h1>Records</h1>
+        <Search />
+      </header>
+
       <ul>
         {record.map((profile, index) => {
-          const { FirstName, LastName , Gender, Latitude, Longitude, CreditCardNumber, CreditCardType, Email, DomainName, PhoneNumber, MacAddress, URL, UserName, LastLogin, PaymentMethod} = profile
+          const {
+            FirstName,
+            LastName,
+            Gender,
+            Latitude,
+            Longitude,
+            CreditCardNumber,
+            CreditCardType,
+            Email,
+            DomainName,
+            PhoneNumber,
+            MacAddress,
+            URL,
+            UserName,
+            LastLogin,
+            PaymentMethod,
+          } = profile
           return (
             <li key={index} className='card'>
               <h2>
                 {FirstName} {LastName}
               </h2>
-             <a href={Email}><p className='email'>
-                {Email}
-              </p></a>
+              <a href={Email}>
+                <p className='email'>{Email}</p>
+              </a>
               <p>{PhoneNumber}</p>
             </li>
           )
@@ -41,6 +61,14 @@ const Record = () => {
     </>
   )
 };
+
+const Search = () => {
+  return(
+    <>
+      <input type="text" className="search" onkeyup="myFunction()" placeholder="Search for names.." />
+    </>
+  );
+}
 
 ReactDOM.render(
     <Record />
