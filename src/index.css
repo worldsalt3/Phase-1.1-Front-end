@@ -128,8 +128,8 @@ a {
   width: 100%; /* Full width */
   height: 100%; /* Full height */
   overflow: auto; /* Enable scroll if needed */
-  background-color: rgba(0, 0, 0, 0.151); /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.082); /* Black w/ opacity */
+  background-color: rgba(0, 0, 0, 0.151) !important;/* Fallback color */
+  background-color: rgba(0, 0, 0, 0.082) !important; /* Black w/ opacity */
 }
 
 .close-modal {
@@ -172,7 +172,7 @@ a {
 }
 
 /* Modal Content */
-.modal-content {
+/* .modal-content {
   position: relative;
   background-color: #fefefe;
   margin: auto;
@@ -181,10 +181,10 @@ a {
   width: 40%;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.096),0 6px 20px 0 rgba(0, 0, 0, 0.034); */
-  animation-name: animatetop;
+  /* animation-name: animatetop;
   animation-duration: 0.4s;
   text-align: left;
-}
+} */ 
 
 /* Add Animation */
 @keyframes animatetop {

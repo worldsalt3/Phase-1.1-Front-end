@@ -1,35 +1,24 @@
 import React, {useState, useEffect} from 'react';
+import Modal from 'react-modal';
 import ReactDOM from 'react-dom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
+Modal.setAppElement('#root');
+
 const url = 'http://api.enye.tech/v1/challenge/records';
 
 const Record = () => {
-
-  const [open, setOpen] = useState(false);
-  const [close, setClose] = useState(true);
   
-  // When the user clicks on the button, open the modal
-  const modal = () => {
-    setOpen(close);
-  }
-
-  // When the user clicks on <span> (x), close the modal
-  const x = () => {
-   setOpen(open);
-    
-  }
-
-
-  // When the user clicks anywhere outside of the modal, close it
-  // window.onclick = function (event) {
-  //   if (event.target) {
-  //     // event.style.display = 'none'
-  //   }
-  // }
-
   const [record, setRecord] = useState([]);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [modalData, setModalData] = useState([])
+  
+ 
+  
+ 
+  
+  
   
   const getProfiles = async () => {
     const response = await fetch(url);
@@ -41,6 +30,20 @@ const Record = () => {
     getProfiles();
   }, []);
 
+  const data = () => {
+    setModalData(record)
+  }
+
+ const openModal = (UserName) => {
+    data();
+    setModalIsOpen(true);
+    setModalData((record) => {
+      return record.filter((profile) => profile.UserName === UserName)
+    })
+  }
+
+  console.log(modalData);
+
   return (
     <>
       <header className='header'>
@@ -49,86 +52,8 @@ const Record = () => {
         <Filter />
       </header>
 
-      <ul>
-        {record.map((profile, index) => {
-          const {
-            FirstName,
-            LastName,
-            Gender,
-            Latitude,
-            Longitude,
-            CreditCardNumber,
-            CreditCardType,
-            Email,
-            DomainName,
-            PhoneNumber,
-            MacAddress,
-            URL,
-            UserName,
-            LastLogin,
-            PaymentMethod,
-          } = profile;
-
-          if(index < 20) {
-            return (
-              <li key={index} className='card' onClick={modal}>
-                <h2>
-                  {FirstName} {LastName}
-                </h2>
-                <a href={Email}>
-                  <p className='email'>{Email}</p>
-                </a>
-                <p>{PhoneNumber}</p>
-                {open ? (
-                  <Modal show={open} key={index}>
-                    <div className='modal-content'>
-                      <div className='modal-header'>
-                        <span className='close' onClick={x}>
-                          &times;
-                        </span>
-                        <h2>Personal Information</h2>
-                      </div>
-                      <div className='modal-body'>
-                        <div className='content'>
-                          <p>Name</p>
-                          <p>
-                            {index.FirstName} {index.LastName}
-                          </p>
-                        </div>
-                        <div className='content'>
-                          <p>Gender</p>
-                          <p>{Gender}</p>
-                        </div>
-                        <div className='content'>
-                          <p>Email</p>
-                          <p> {Email}</p>
-                        </div>
-                        <div className='content'>
-                          <p>Phone Number</p>
-                          <p>{PhoneNumber}</p>
-                        </div>
-                      </div>
-                      <div className='modal-footer'>
-                        <h3>CARD</h3>
-                      </div>
-                      <div className='modal-body'>
-                        <div className='content'>
-                          <p>Credit Card Number</p>
-                          <p>{CreditCardNumber}</p>
-                        </div>
-                        <div className='content'>
-                          <p>Credit Card Type</p>
-                          <p>{CreditCardType}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </Modal>
-                ) : null}
-              </li>
-            )
-          }
-        })}
-      </ul>
+      <List record={record} openModal={openModal} data={data}/>
+      <DisplayModal setModalIsOpen={setModalIsOpen} modalData={modalData} modalIsOpen={modalIsOpen} openModal={openModal} />
       <Pagination />
     </>
   )
@@ -176,14 +101,115 @@ const Filter = () => {
   );
 };
 
-const Modal = ({show, children}) => {
+const List = ({record, openModal, data}) => {
   return (
-    <div className='modal open-modal'>
-      {children}
-    </div>
+    <>
+      {record.map((profile, index) => {
+        const {
+          FirstName,
+          LastName,
+          PhoneNumber,
+          Email,
+          UserName
+        } = profile;
+        
+        return (
+          <div key={index} className='card' onClick={() => {
+            data();
+            openModal(UserName);}}>
+            <h2>
+              {FirstName} {LastName}
+            </h2>
+            <a href={Email}>
+              <p className='email'>{Email}</p>
+            </a>
+            <p>{PhoneNumber}</p>
+          </div>
+        )
+      })}
+    </>
   )
 }
 
+const DisplayModal = ({modalData, modalIsOpen, setModalIsOpen}) => {
+  return(
+    <>
+      {modalData.map((object) => {
+      const {FirstName,LastName,PhoneNumber,Email,Gender,CreditCardType,CreditCardNumber} = object;
+  
+      return (
+
+        <Modal
+          isOpen={modalIsOpen}
+          onRequestClose={() => setModalIsOpen(false)}
+          style={{
+            overlay: {
+              backgroundColor: 'rgba(0, 0, 0, 0.151)' /* Fallback color */,
+              backgroundColor: 'rgba(0, 0, 0, 0.082)' /* Black w/ opacity */,
+            },
+            content: {
+              position: 'relative',
+              backgroundColor: '#fefefe',
+              margin: 'auto',
+              padding: 0,
+              border: '1px solid #888',
+              width: '40%',
+              boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)',
+              /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.096),0 6px 20px 0 rgba(0, 0, 0, 0.034); */
+              animationName: 'animatetop',
+              animationDuration: '0.4s',
+              textAlign: 'left',
+            },
+          }}
+        >
+          <div>
+            <div className='modal-header'>
+              <span className='close' onClick={() => setModalIsOpen(false)}>
+                &times;
+              </span>
+              <h2>Personal Information</h2>
+            </div>
+            <div className='modal-body'>
+              <div className='content'>
+                <p>Name</p>
+                <p>
+                  {FirstName} {LastName}
+                </p>
+              </div>
+              <div className='content'>
+                <p>Gender</p>
+                <p>{Gender}</p>
+              </div>
+              <div className='content'>
+                <p>Email</p>
+                <p> {Email}</p>
+              </div>
+              <div className='content'>
+                <p>Phone Number</p>
+                <p>{PhoneNumber}</p>
+              </div>
+            </div>
+            <div className='modal-footer'>
+              <h3>CARD</h3>
+            </div>
+            <div className='modal-body'>
+              <div className='content'>
+                <p>Credit Card Number</p>
+                <p>{CreditCardNumber}</p>
+              </div>
+              <div className='content'>
+                <p>Credit Card Type</p>
+                <p>{CreditCardType}</p>
+              </div>
+            </div>
+          </div>
+        </Modal>
+      )
+      })}
+    </>
+  ) 
+}
+ 
 ReactDOM.render(
     <Record />
   ,
