@@ -7,20 +7,20 @@ const url = 'http://api.enye.tech/v1/challenge/records';
 
 const Record = () => {
 
-  const [style, setStyle] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [close, setClose] = useState(true);
   
   // When the user clicks on the button, open the modal
-  const modal = (e) => {
-    e.preventDefault()
-    setStyle(true);
+  const modal = () => {
+    setOpen(close);
   }
 
   // When the user clicks on <span> (x), close the modal
   const x = () => {
-   console.log('clicked')
-   return !style;
+   setOpen(open);
     
   }
+
 
   // When the user clicks anywhere outside of the modal, close it
   // window.onclick = function (event) {
@@ -71,7 +71,7 @@ const Record = () => {
 
           if(index < 20) {
             return (
-              <li key={index} className='card' onClick={(e) => modal(e)}>
+              <li key={index} className='card' onClick={modal}>
                 <h2>
                   {FirstName} {LastName}
                 </h2>
@@ -79,39 +79,51 @@ const Record = () => {
                   <p className='email'>{Email}</p>
                 </a>
                 <p>{PhoneNumber}</p>
-                <div
-                  className={!style ? 'close-modal modal' : 'open-modal modal'}
-                >
-                  <div className='modal-content'>
-                    <div className='modal-header'>
-                      <span className='close' onClick={() => x()}>
-                        &times;
-                      </span>
-                      <h2>Personal Information</h2>
-                    </div>
-                    <div className='modal-body'>
-                      <div className='content'>
-                        <p>Name</p> 
-                        <p>{FirstName} {LastName}</p>
+                {open ? (
+                  <Modal show={open} key={index}>
+                    <div className='modal-content'>
+                      <div className='modal-header'>
+                        <span className='close' onClick={x}>
+                          &times;
+                        </span>
+                        <h2>Personal Information</h2>
                       </div>
-                      <div className='content'>
-                        <p>Gender</p>
-                        <p>{Gender}</p>
+                      <div className='modal-body'>
+                        <div className='content'>
+                          <p>Name</p>
+                          <p>
+                            {index.FirstName} {index.LastName}
+                          </p>
+                        </div>
+                        <div className='content'>
+                          <p>Gender</p>
+                          <p>{Gender}</p>
+                        </div>
+                        <div className='content'>
+                          <p>Email</p>
+                          <p> {Email}</p>
+                        </div>
+                        <div className='content'>
+                          <p>Phone Number</p>
+                          <p>{PhoneNumber}</p>
+                        </div>
                       </div>
-                      <div className='content'>
-                        <p>Email</p>
-                        <p> {Email}</p>
+                      <div className='modal-footer'>
+                        <h3>CARD</h3>
                       </div>
-                      <div className='content'>
-                        <p>Phone Number</p>
-                        <p>{PhoneNumber}</p>
-                      </div>                
+                      <div className='modal-body'>
+                        <div className='content'>
+                          <p>Credit Card Number</p>
+                          <p>{CreditCardNumber}</p>
+                        </div>
+                        <div className='content'>
+                          <p>Credit Card Type</p>
+                          <p>{CreditCardType}</p>
+                        </div>
+                      </div>
                     </div>
-                    <div className='modal-footer'>
-                      <h3>CARD</h3>
-                    </div>
-                  </div>
-                </div>
+                  </Modal>
+                ) : null}
               </li>
             )
           }
@@ -163,6 +175,14 @@ const Filter = () => {
     </div>
   );
 };
+
+const Modal = ({show, children}) => {
+  return (
+    <div className='modal open-modal'>
+      {children}
+    </div>
+  )
+}
 
 ReactDOM.render(
     <Record />

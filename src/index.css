@@ -194,5 +194,5 @@ a {
 
 .content {
   display: flex;
-  text-justify: distribute;
+  justify-content: space-between;
 }
