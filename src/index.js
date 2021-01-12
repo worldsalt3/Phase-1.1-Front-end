@@ -6,19 +6,15 @@ import reportWebVitals from './reportWebVitals';
 
 Modal.setAppElement('#root');
 
-const url = 'http://api.enye.tech/v1/challenge/records';
+const url = 'https://api.enye.tech/v1/challenge/records';
 
 const Record = () => {
   
   const [record, setRecord] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [modalData, setModalData] = useState([])
-  
+  const [modalData, setModalData] = useState([]);
+  const [search, setSearch] = useState('');
  
-  
- 
-  
-  
   
   const getProfiles = async () => {
     const response = await fetch(url);
@@ -42,27 +38,34 @@ const Record = () => {
     })
   }
 
-  console.log(modalData);
+  const clickSearch = (UserName) => {
+    setSearch((record) => {
+      return record.filter((profile) => profile.UserName === UserName)
+    })
+  }
+
+    console.log(search)
 
   return (
     <>
       <header className='header'>
         <h1>Records</h1>
-        <Search />
+        <Search search={search} setSearch={setSearch} clickSearch={clickSearch}/>
         <Filter />
       </header>
 
-      <List record={record} openModal={openModal} data={data}/>
+      <List record={record} openModal={openModal} data={data} search={search} clickSearch={clickSearch}/>
       <DisplayModal setModalIsOpen={setModalIsOpen} modalData={modalData} modalIsOpen={modalIsOpen} openModal={openModal} />
       <Pagination />
     </>
   )
 };
 
-const Search = () => {
+const Search = ({search, setSearch, clickSearch}) => {
   return(
     <>
-      <input type="text" className="search"  placeholder="Search for names.." />
+      <input type="text" className="search"  placeholder="Search for First Name.." value={search} onChange={(e) => setSearch(e.target.value)}/>
+      <button className="button" onClick={() => clickSearch(search)}></button>
     </>
   );
 };
@@ -101,7 +104,7 @@ const Filter = () => {
   );
 };
 
-const List = ({record, openModal, data}) => {
+const List = ({record, openModal, data, clickSearch}) => {
   return (
     <>
       {record.map((profile, index) => {
@@ -113,19 +116,47 @@ const List = ({record, openModal, data}) => {
           UserName
         } = profile;
         
-        return (
-          <div key={index} className='card' onClick={() => {
-            data();
-            openModal(UserName);}}>
-            <h2>
-              {FirstName} {LastName}
-            </h2>
-            <a href={Email}>
-              <p className='email'>{Email}</p>
-            </a>
-            <p>{PhoneNumber}</p>
-          </div>
-        )
+       if(index < 20) {
+          return (
+            <div
+              key={index}
+              className='card'
+              onClick={() => {
+                data()
+                openModal(UserName)
+              }}
+            >
+              <h2>
+                {FirstName} {LastName}
+              </h2>
+              <a href={Email}>
+                <p className='email'>{Email}</p>
+              </a>
+              <p>{PhoneNumber}</p>
+            </div>
+          )
+       } if(clickSearch) {
+
+
+         return (
+            <div
+              key={index}
+              className='card'
+              onClick={() => {
+                data()
+                openModal(UserName)
+              }}
+            >
+              <h2>
+                {FirstName} {LastName}
+              </h2>
+              <a href={Email}>
+                <p className='email'>{Email}</p>
+              </a>
+              <p>{PhoneNumber}</p>
+            </div>
+          )
+       }
       })}
     </>
   )
@@ -134,7 +165,7 @@ const List = ({record, openModal, data}) => {
 const DisplayModal = ({modalData, modalIsOpen, setModalIsOpen}) => {
   return(
     <>
-      {modalData.map((object) => {
+      {modalData.map((object, index) => {
       const {FirstName,LastName,PhoneNumber,Email,Gender,CreditCardType,CreditCardNumber} = object;
   
       return (
@@ -161,7 +192,7 @@ const DisplayModal = ({modalData, modalIsOpen, setModalIsOpen}) => {
               textAlign: 'left',
             },
           }}
-        >
+         key={index}>
           <div>
             <div className='modal-header'>
               <span className='close' onClick={() => setModalIsOpen(false)}>

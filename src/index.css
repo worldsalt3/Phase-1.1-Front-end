@@ -38,16 +38,30 @@ a {
 }
 
 .search {
-  background-image: url('./images/icons8-search-64.png'); 
+  /* background-image: url('./images/icons8-search-64.png'); 
   background-position: 7px; 
   background-repeat: no-repeat;
-  background-size: 30px;  
+  background-size: 30px;   */
   width: 50%; 
   font-size: 16px; 
   padding: 15px 20px 12px 50px; 
   border: 1px solid #ddd; 
   margin-bottom: 12px; 
   border-radius: 5px;
+}
+
+.button {
+  background-image: url('./images/icons8-search-64.png'); 
+  background-position: 17px; 
+  background-repeat: no-repeat;
+  background-size: 30px; 
+  padding: 30px 40px 15px 30px; 
+  background-color: white;
+  color: black;
+  margin-left: 20px;
+  border: 1px solid #ddd; 
+  border-radius: 5px;
+  font-size: 16px;
 }
 
 /* Pagination links */
