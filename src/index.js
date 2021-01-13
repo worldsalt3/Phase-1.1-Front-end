@@ -14,61 +14,101 @@ const Record = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalData, setModalData] = useState([]);
   const [search, setSearch] = useState('');
+  const [searchRecord, setSearchRecord] = useState([]);
  
   
   const getProfiles = async () => {
     const response = await fetch(url);
     const record = await response.json();
     setRecord(record.records.profiles);
+    setSearchRecord(record.records.profiles);
   }
 
-  useEffect(async () => {
-    getProfiles();
-  }, []);
-
+  
   const data = () => {
     setModalData(record)
   }
 
- const openModal = (UserName) => {
+  
+  const openModal = (UserName) => {
     data();
     setModalIsOpen(true);
     setModalData((record) => {
       return record.filter((profile) => profile.UserName === UserName)
     })
   }
+  
 
-  const clickSearch = (UserName) => {
-    setSearch((record) => {
-      return record.filter((profile) => profile.UserName === UserName)
+  const clickSearch = async (search) => {
+    setSearchRecord((record) => {
+      return record.filter(
+        (profile) =>
+          profile.Gender.toLowerCase() === search.toLowerCase() ||
+          profile.FirstName.toLowerCase() === search.toLowerCase() ||
+          profile.LastName.toLowerCase() === search.toLowerCase() ||
+          profile.UserName.toLowerCase() === search.toLowerCase() ||
+          profile.Email.toLowerCase() === search.toLowerCase() ||
+          profile.PhoneNumber.toLowerCase() === search.toLowerCase() ||
+          profile.CreditCardNumber.toLowerCase() === search.toLowerCase() ||
+          profile.CreditCardType.toLowerCase() === search.toLowerCase() ||
+          profile.PaymentMethod.toLowerCase() === search.toLowerCase() 
+      )
     })
   }
 
+
     console.log(search)
+
+    useEffect(async () => {
+      getProfiles();
+    }, []);
+
 
   return (
     <>
       <header className='header'>
         <h1>Records</h1>
-        <Search search={search} setSearch={setSearch} clickSearch={clickSearch}/>
+        <Search search={search} setSearch={setSearch} clickSearch={clickSearch} setRecord={setRecord} record={record} setSearchRecord={setSearchRecord}/>
         <Filter />
       </header>
 
-      <List record={record} openModal={openModal} data={data} search={search} clickSearch={clickSearch}/>
+      <List record={record} openModal={openModal} data={data} search={search} clickSearch={clickSearch} searchRecord={searchRecord} search={Search} setSearchRecord={setSearchRecord}/>
       <DisplayModal setModalIsOpen={setModalIsOpen} modalData={modalData} modalIsOpen={modalIsOpen} openModal={openModal} />
       <Pagination />
     </>
   )
 };
 
-const Search = ({search, setSearch, clickSearch}) => {
-  return(
+const Search = ({
+  search,
+  setSearch,
+  clickSearch,
+  record,
+ setSearchRecord
+}) => {
+  return (
     <>
-      <input type="text" className="search"  placeholder="Search for First Name.." value={search} onChange={(e) => setSearch(e.target.value)}/>
-      <button className="button" onClick={() => clickSearch(search)}></button>
+      <input
+        type='text'
+        className='search'
+        placeholder='Search for First Name..'
+        value={search}
+        onChange={(e) => {
+          e.preventDefault()
+          setSearch(e.target.value)
+        }} 
+        onInput={() => {setSearchRecord(record)}}
+      />
+      <button
+        className='button'
+        onClick={(e) => {
+          e.preventDefault()
+          clickSearch(search)
+        }} 
+      ></button>
     </>
-  );
-};
+  )
+}
 
 const Pagination = () => {
   return (
@@ -104,60 +144,69 @@ const Filter = () => {
   );
 };
 
-const List = ({record, openModal, data, clickSearch}) => {
+const List = ({record, openModal, data, search, searchRecord, setSearchRecord}) => {
   return (
     <>
-      {record.map((profile, index) => {
-        const {
-          FirstName,
-          LastName,
-          PhoneNumber,
-          Email,
-          UserName
-        } = profile;
-        
-       if(index < 20) {
-          return (
-            <div
-              key={index}
-              className='card'
-              onClick={() => {
-                data()
-                openModal(UserName)
-              }}
-            >
-              <h2>
-                {FirstName} {LastName}
-              </h2>
-              <a href={Email}>
-                <p className='email'>{Email}</p>
-              </a>
-              <p>{PhoneNumber}</p>
-            </div>
-          )
-       } if(clickSearch) {
-
-
-         return (
-            <div
-              key={index}
-              className='card'
-              onClick={() => {
-                data()
-                openModal(UserName)
-              }}
-            >
-              <h2>
-                {FirstName} {LastName}
-              </h2>
-              <a href={Email}>
-                <p className='email'>{Email}</p>
-              </a>
-              <p>{PhoneNumber}</p>
-            </div>
-          )
-       }
-      })}
+      {search === ''
+        ? record.map((profile, index) => {
+            const {
+              FirstName,
+              LastName,
+              PhoneNumber,
+              Email,
+              UserName,
+            } = profile
+            console.log(searchRecord)
+            if (index < 20) {
+              return (
+                <div
+                  key={index}
+                  className='card'
+                  onClick={() => {
+                    data()
+                    openModal(UserName)
+                  }}
+                >
+                  <h2>
+                    {FirstName} {LastName}
+                  </h2>
+                  <a href={Email}>
+                    <p className='email'>{Email}</p>
+                  </a>
+                  <p>{PhoneNumber}</p>
+                </div>
+              )
+            }
+          })
+        : searchRecord.map((profile, index) => {
+            const {
+              FirstName,
+              LastName,
+              PhoneNumber,
+              Email,
+              UserName,
+            } = profile
+            console.log(searchRecord)
+            if (index < 20) {
+              return (
+                <div
+                  key={index}
+                  className='card'
+                  onClick={() => {
+                    openModal(UserName)
+                  }}
+                >
+                  <h2>
+                    {FirstName} {LastName}
+                  </h2>
+                  <a href={Email}>
+                    <p className='email'>{Email}</p>
+                  </a>
+                  <p>{PhoneNumber}</p>
+                </div>
+              )
+            }
+          })}
     </>
   )
 }
