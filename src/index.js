@@ -16,7 +16,8 @@ const Record = () => {
   const [modalData, setModalData] = useState([]);
   const [search, setSearch] = useState('');
   const [searchRecord, setSearchRecord] = useState([]);
-  const [updateRecord, setUpdateRecord] = useState([])
+  const [updateRecord, setUpdateRecord] = useState([]);
+  const [filter, setFilter] = useState([])
  
   
   const getProfiles = async () => {
@@ -24,7 +25,8 @@ const Record = () => {
     const record = await response.json();
     setRecord(record.records.profiles);
     setSearchRecord(record.records.profiles);
-    setUpdateRecord(record.records.status)
+    setUpdateRecord(record.records.profiles)
+    setFilter(record.records.profiles)
   }
 
   const recordPerPage = 20
@@ -39,14 +41,13 @@ const Record = () => {
     setCurrentPage(pageNumber)
   }
 
-  console.log(record)
+  // console.log(record)
   
-  console.log(currentRecord)
   
   const data = () => {
     setModalData(record)
   }
-
+  
   
   const openModal = (UserName) => {
     data();
@@ -56,7 +57,18 @@ const Record = () => {
     })
   }
   
-
+  const getSelection = async (selected) => {
+    setFilter((record) => {
+      return record.filter(
+        (profile) =>
+        selected.includes(profile) ||
+        profile.Gender.toLowerCase() === selected.toLowerCase() ||
+        profile.PaymentMethod.toLowerCase() === selected.toLowerCase()
+        )
+      })
+    }
+    
+    console.log(filter)
   const clickSearch = async (search) => {
     setSearchRecord((record) => {
       return record.filter(
@@ -121,14 +133,17 @@ const Record = () => {
       )
   })
     
-  useEffect( () => {
+  useEffect(async () => {
     getProfiles();
   }, []);
 
-  useEffect( () => {
+  useEffect(async() => {
     setUpdateRecord(searchRecord)
   },[<Search/>])
 
+//  useEffect(async () => {
+//    setUpdateRecord(filter)
+//  }, [<Filter />])
 
   return (
     <>
@@ -142,7 +157,7 @@ const Record = () => {
           record={record}
           setSearchRecord={setSearchRecord}
         />
-        <Filter />
+        <Filter getSelection={getSelection} record={record} setFilter={setFilter}/>
       </header>
 
       <List
@@ -159,6 +174,7 @@ const Record = () => {
         record={record}
         activePage={activePage}
         handlePageChange={handlePageChange}
+        updateRecord={updateRecord}
       />
     </>
   )
@@ -176,7 +192,7 @@ const Search = ({
       <input
         type='text'
         className='search'
-        placeholder='Search for First Name..'
+        placeholder='Search...'
         value={search}
         onChange={(e) => {
           e.preventDefault()
@@ -195,13 +211,13 @@ const Search = ({
   )
 }
 
-const Paginations = ({record, activePage, handlePageChange}) => {
+const Paginations = ({record, activePage, handlePageChange, updateRecord}) => {
   return (
     <div className='pagination'>
       <Pagination
         activePage={activePage}
         itemsCountPerPage={20}
-        totalItemsCount={record.length}
+        totalItemsCount={updateRecord.length}
         pageRangeDisplayed={20}
         onChange={handlePageChange}
         itemClass=''
@@ -212,21 +228,33 @@ const Paginations = ({record, activePage, handlePageChange}) => {
   )
 };
 
-const Filter = () => {
-  return(
-    <div className="dropdown">
-      <button className="dropbtn">Filter</button>
-      <div id="myDropdown" className="dropdown-content">
-        <a href="#about">About</a>
-        <a href="#base">Base</a>
-        <a href="#blog">Blog</a>
-        <a href="#contact">Contact</a>
-        <a href="#custom">Custom</a>
-        <a href="#support">Support</a>
-        <a href="#tools">Tools</a>
-      </div>
-    </div>
-  );
+const Filter = ({getSelection, record, setFilter}) => {
+  
+  return (
+    <>
+      <label htmlFor='Gender' className='dropdown'>
+        Gender
+        <select
+          name='Gender'
+          id='Gender'
+          placeholder='Filter'
+          className=' dropbtn'
+          onChange={(e) => {
+            e.preventDefault()
+            getSelection(e.target.value)}}
+          onBlur={() => setFilter(record)}
+        >
+          <option value={record}>All</option>
+          <option value='male'>
+            Male
+          </option>
+          <option value='female'>
+            Female
+          </option>
+        </select>
+      </label>
+    </>
+  )
 };
 
 const List = ({
