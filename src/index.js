@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import Modal from 'react-modal';
+import Pagination from 'react-js-pagination'
 import ReactDOM from 'react-dom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
@@ -15,6 +16,7 @@ const Record = () => {
   const [modalData, setModalData] = useState([]);
   const [search, setSearch] = useState('');
   const [searchRecord, setSearchRecord] = useState([]);
+  const [updateRecord, setUpdateRecord] = useState([])
  
   
   const getProfiles = async () => {
@@ -22,8 +24,24 @@ const Record = () => {
     const record = await response.json();
     setRecord(record.records.profiles);
     setSearchRecord(record.records.profiles);
+    setUpdateRecord(record.records.status)
   }
 
+  const recordPerPage = 20
+  const [activePage, setCurrentPage] = useState(1)
+
+  const indexOfLastRecord = activePage * recordPerPage
+  const indexOfFirstRecord = indexOfLastRecord - recordPerPage
+  const currentRecord = updateRecord.slice(indexOfFirstRecord, indexOfLastRecord)
+
+  const handlePageChange = (pageNumber) => {
+    console.log(`active page is ${pageNumber}`)
+    setCurrentPage(pageNumber)
+  }
+
+  console.log(record)
+  
+  console.log(currentRecord)
   
   const data = () => {
     setModalData(record)
@@ -54,27 +72,94 @@ const Record = () => {
           profile.PaymentMethod.toLowerCase() === search.toLowerCase() 
       )
     })
+    
   }
 
+  // const renderSearch = searchRecord.map((profile, index) => {
+  //   const { FirstName, LastName, PhoneNumber, Email, UserName } = profile
 
-    console.log(search)
+  //   if (index < 20) {
+  //     return (
+  //       <div
+  //         key={index}   
+  //         className='card'
+  //         onClick={() => {
+  //           openModal(UserName)
+  //         }}
+  //       >
+  //         <h2>
+  //           {FirstName} {LastName}
+  //         </h2>
+  //         <a href={Email}>
+  //           <p className='email'>{Email}</p>
+  //         </a>
+  //         <p>{PhoneNumber}</p>
+  //       </div>
+  //     )
+  //   }
+  // })
 
-    useEffect(async () => {
-      getProfiles();
-    }, []);
+  const renderRecords = currentRecord.map((profile, index) => {
+    const { FirstName, LastName, PhoneNumber, Email, UserName } = profile
+      return (
+        <div
+          key={index}
+          className='card'
+          onClick={() => {
+            data()
+            openModal(UserName)
+          }}
+        >
+          <h2>
+            {FirstName} {LastName}
+          </h2>
+          <a href={Email}>
+            <p className='email'>{Email}</p>
+          </a>
+          <p>{PhoneNumber}</p>
+        </div>
+      )
+  })
+    
+  useEffect( () => {
+    getProfiles();
+  }, []);
+
+  useEffect( () => {
+    setUpdateRecord(searchRecord)
+  },[<Search/>])
 
 
   return (
     <>
       <header className='header'>
         <h1>Records</h1>
-        <Search search={search} setSearch={setSearch} clickSearch={clickSearch} setRecord={setRecord} record={record} setSearchRecord={setSearchRecord}/>
+        <Search
+          search={search}
+          setSearch={setSearch}
+          clickSearch={clickSearch}
+          setRecord={setRecord}
+          record={record}
+          setSearchRecord={setSearchRecord}
+        />
         <Filter />
       </header>
 
-      <List record={record} openModal={openModal} data={data} search={search} clickSearch={clickSearch} searchRecord={searchRecord} search={Search} setSearchRecord={setSearchRecord}/>
-      <DisplayModal setModalIsOpen={setModalIsOpen} modalData={modalData} modalIsOpen={modalIsOpen} openModal={openModal} />
-      <Pagination />
+      <List
+        search={Search}
+        renderRecords={renderRecords}
+      />
+      <DisplayModal
+        setModalIsOpen={setModalIsOpen}
+        modalData={modalData}
+        modalIsOpen={modalIsOpen}
+        openModal={openModal}
+      />
+      <Paginations
+        record={record}
+        activePage={activePage}
+        handlePageChange={handlePageChange}
+      />
     </>
   )
 };
@@ -110,19 +195,19 @@ const Search = ({
   )
 }
 
-const Pagination = () => {
+const Paginations = ({record, activePage, handlePageChange}) => {
   return (
-    <div className='pagination pagin'>
-      <a href='#'>&laquo;</a>
-      <a href='#'>1</a>
-      <a className='active' href='#'>
-        2
-      </a>
-      <a href='#'>3</a>
-      <a href='#'>4</a>
-      <a href='#'>5</a>
-      <a href='#'>6</a>
-      <a href='#'>&raquo;</a>
+    <div className='pagination'>
+      <Pagination
+        activePage={activePage}
+        itemsCountPerPage={20}
+        totalItemsCount={record.length}
+        pageRangeDisplayed={20}
+        onChange={handlePageChange}
+        itemClass=''
+        activeClass='active'
+        innerClass=''
+      />
     </div>
   )
 };
@@ -144,69 +229,14 @@ const Filter = () => {
   );
 };
 
-const List = ({record, openModal, data, search, searchRecord, setSearchRecord}) => {
+const List = ({
+  search,
+  renderRecords,
+  renderSearch
+}) => {
   return (
     <>
-      {search === ''
-        ? record.map((profile, index) => {
-            const {
-              FirstName,
-              LastName,
-              PhoneNumber,
-              Email,
-              UserName,
-            } = profile
-            console.log(searchRecord)
-            if (index < 20) {
-              return (
-                <div
-                  key={index}
-                  className='card'
-                  onClick={() => {
-                    data()
-                    openModal(UserName)
-                  }}
-                >
-                  <h2>
-                    {FirstName} {LastName}
-                  </h2>
-                  <a href={Email}>
-                    <p className='email'>{Email}</p>
-                  </a>
-                  <p>{PhoneNumber}</p>
-                </div>
-              )
-            }
-          })
-        : searchRecord.map((profile, index) => {
-            const {
-              FirstName,
-              LastName,
-              PhoneNumber,
-              Email,
-              UserName,
-            } = profile
-            console.log(searchRecord)
-            if (index < 20) {
-              return (
-                <div
-                  key={index}
-                  className='card'
-                  onClick={() => {
-                    openModal(UserName)
-                  }}
-                >
-                  <h2>
-                    {FirstName} {LastName}
-                  </h2>
-                  <a href={Email}>
-                    <p className='email'>{Email}</p>
-                  </a>
-                  <p>{PhoneNumber}</p>
-                </div>
-              )
-            }
-          })}
+      {renderRecords}
     </>
   )
 }

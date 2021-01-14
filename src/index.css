@@ -64,27 +64,25 @@ a {
   font-size: 16px;
 }
 
-/* Pagination links */
-.pagin {
-  margin-top: 30px;
+.pagination {
+   margin-top: 30px;
   text-align: center;
-}
-
-.pagination a {
   color: black;
-  padding: 8px 16px;
-  text-decoration: none;
-  transition: background-color .3s, color .3s;
+  
 }
 
-/* Style the active/current link */
-.pagination a.active {
-  background-color: black;
+.pagination li {
+  padding: 8px 16px;
+  list-style-type: none;
+  transition: background-color .3s, color .3s;
+  display: inline;
+  border: 1px solid grey;
+}
+
+.active {
+  background-color: grey;
   color: white;
 }
-
-/* Add a grey background color on mouse-over */
-.pagination a:hover {background-color: black; color: white;}
 
 /* Dropdown Button */
 .dropbtn {
